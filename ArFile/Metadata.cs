@@ -18,6 +18,7 @@ namespace ArFile
         public Dictionary<int, Chunk> EmptyChunks { get; set; }
         public Dictionary<int, Chunk> EmptyChunksStart { get; set; }
         public Dictionary<int, Chunk> EmptyChunksLength { get; set; }
+        public int defaultChunkSize { get; set; }
 
         public Metadata()
         {
@@ -30,6 +31,7 @@ namespace ArFile
             this.EmptyChunks = new Dictionary<int, Chunk>();
             this.EmptyChunksStart = new Dictionary<int, Chunk>();
             this.EmptyChunksLength = new Dictionary<int, Chunk>();
+            this.defaultChunkSize = 1000;
             //Register Superblock Chunk
             Logger.Debug("Register Superblock Chunk...");
             WriteChunk(GetChunk(100), 0);
