@@ -9,7 +9,6 @@ namespace ArFile
         public int Id { get; }
         public int Start { get; }
         public int Length { get; }
-        public byte[] Data { get; set; }
         private int Written { get; set; }
         private int EndOfChunk { get; set; }
         private bool Deleted { get; set; }
