@@ -9,6 +9,7 @@
     <PackageReference Include="MsgPack" Version="0.1.0.2011042300" />
     <PackageReference Include="MsgPack.Cli" Version="0.9.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Noemax.Compression" Version="17.301.0" />
   </ItemGroup>
 
 </Project>

@@ -10,8 +10,8 @@ namespace ArFile
     {
         static void Main()
         {
-            //AddFile();
-            ReadFile();
+            AddFile();
+            //ReadFile();
             //AddData();
             //ReadArchive();
             //WriteTest();
@@ -58,7 +58,7 @@ namespace ArFile
         {
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
             string filePath = @"C:\tmp\restore.pdf";
-            int fileId = 1;
+            int fileId = 2;
             FileStream file = new FileStream(filePath, FileMode.Create);
 
             foreach (int chunkId in archive.Metadata.Files[fileId].Chunks)

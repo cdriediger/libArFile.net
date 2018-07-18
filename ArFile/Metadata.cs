@@ -19,6 +19,8 @@ namespace ArFile
         public Dictionary<int, Chunk> EmptyChunksStart { get; set; }
         public Dictionary<int, Chunk> EmptyChunksLength { get; set; }
         public int defaultChunkSize { get; set; }
+        public CompressionMethod defaultCompressionMethod { get; set; }
+        public int defaultCompressionLevel { get; set; }
 
         public Metadata()
         {
@@ -32,6 +34,8 @@ namespace ArFile
             this.EmptyChunksStart = new Dictionary<int, Chunk>();
             this.EmptyChunksLength = new Dictionary<int, Chunk>();
             this.defaultChunkSize = 1000;
+            this.defaultCompressionMethod = CompressionMethod.LZMA;
+            this.defaultCompressionLevel = 5;
             //Register Superblock Chunk
             Logger.Debug("Register Superblock Chunk...");
             WriteChunk(GetChunk(100), 0);
