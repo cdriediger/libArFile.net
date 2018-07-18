@@ -90,14 +90,19 @@ namespace ArFile
             //}
         }
 
-        public string ReadChunk(int ChunkId)
+        public string ReadString(int ChunkId)
+        {
+            return System.Text.Encoding.Default.GetString(ReadChunk(ChunkId));
+        }
+
+        public byte[] ReadChunk(int ChunkId)
         {
             int ChunkStart = Metadata.GetChunkStart(ChunkId);
             int ChunkLength = Metadata.GetChunkLength(ChunkId);
             byte[] DataBuffer = new byte[ChunkLength];
             ArchivFile.Seek(ChunkStart, SeekOrigin.Begin);
             ArchivFile.Read(DataBuffer, 0, ChunkLength);
-            return System.Text.Encoding.Default.GetString(DataBuffer);
+            return DataBuffer;
         }
 
         private void CreateNewArchive()

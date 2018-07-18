@@ -10,7 +10,8 @@ namespace ArFile
     {
         static void Main()
         {
-            AddFile();
+            //AddFile();
+            ReadFile();
             //AddData();
             //ReadArchive();
             //WriteTest();
@@ -33,7 +34,7 @@ namespace ArFile
         static public void AddFile()
         {
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
-            string filePath = @"C:\tmp\test.txt";
+            string filePath = @"C:\tmp\test.pdf";
             int fileId = archive.NewFile(filePath);
             FileStream file = new FileStream(filePath, FileMode.Open);
 
@@ -53,10 +54,25 @@ namespace ArFile
             archive.Dispose();
         }
 
+        static public void ReadFile()
+        {
+            Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
+            string filePath = @"C:\tmp\restore.pdf";
+            int fileId = 1;
+            FileStream file = new FileStream(filePath, FileMode.Create);
+
+            foreach (int chunkId in archive.Metadata.Files[fileId].Chunks)
+            {
+                file.Write(archive.ReadChunk(chunkId), 0, archive.Metadata.GetChunkLength(chunkId));
+            }
+            file.Close();
+            archive.Dispose();
+        }
+
         static public void ReadArchive()
         {
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
-            string data = archive.ReadChunk(3);
+            string data = archive.ReadString(3);
             Logger.Warn($"Data: '{data}'");
         }
 
