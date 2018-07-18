@@ -67,27 +67,11 @@ namespace ArFile
             if (Data.Length > ChunkLength) Logger.FatalError("DataLength > Chunk");
             Logger.Debug($"Writing '{Data}' to Chunk: {ChunkId} Start: {ChunkStart} Length: {ChunkLength}");
             ArchivFile.Write(Data, 0, ChunkLength);
-            //using (StreamWriter Writer = new StreamWriter(ArchivFile, Encoding.UTF8, 100, true))
-            //{
-            //    Writer.Write(Data);
-            //}
         }
 
         public void WriteChunk(string Data, int ChunkId, int FileId)
         {
-            int ChunkStart = Metadata.GetChunkStart(ChunkId);
-            int ChunkLength = Metadata.GetChunkLength(ChunkId);
-            if (Data.Length > ChunkLength) throw new ChunkToSmallException($"Chunk {ChunkId} smaller then Data. {Data.Length} > {ChunkLength}");
-            Metadata.WriteChunk(ChunkId, FileId);
-            ArchivFile.Seek(ChunkStart, SeekOrigin.Begin);
-            if (!(ArchivFile.Position == ChunkStart)) Logger.FatalError("ArchiveFile Position != ChunkStart");
-            if (Encoding.ASCII.GetBytes(Data).Length > ChunkLength) Logger.FatalError("DataLength > Chunk");
-            Logger.Debug($"Writing '{Data}' to Chunk: {ChunkId} Start: {ChunkStart} Length: {ChunkLength}");
-            ArchivFile.Write(Encoding.ASCII.GetBytes(Data), 0, ChunkLength);
-            //using (StreamWriter Writer = new StreamWriter(ArchivFile, Encoding.UTF8, 100, true))
-            //{
-            //    Writer.Write(Data);
-            //}
+            WriteChunk(Encoding.ASCII.GetBytes(Data), ChunkId, FileId);
         }
 
         public string ReadString(int ChunkId)
