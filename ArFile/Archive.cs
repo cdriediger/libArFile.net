@@ -31,12 +31,11 @@ namespace ArFile
         public void Dispose()
         {
             string MetadataPacked = JsonConvert.SerializeObject(Metadata);    
-            int MetaDataChunkId = Metadata.GetChunk(MetadataPacked.Length);
+            //Write Metadata to File
+            int MetaDataChunkId = WriteChunk(MetadataPacked, 0);
             int MetaDataChunkStart = Metadata.GetChunkStart(MetaDataChunkId);
             int MetaDataChunkLength = Metadata.GetChunkLength(MetaDataChunkId);
             Logger.Debug($"MetadaChunk: Start: {MetaDataChunkStart}, Length: {MetaDataChunkLength}\n##########\n{MetadataPacked.ToString()}\n#############");
-            //Write Metadata to File
-            WriteChunk(MetadataPacked, MetaDataChunkId, 0);
             string MetaDataChunkHash = "MD5DEMOHASH";
             //Write Superblock
             SuperBlock NewSuperBlock = new SuperBlock(MetaDataChunkStart, MetaDataChunkLength, MetaDataChunkHash);
@@ -56,22 +55,25 @@ namespace ArFile
             return FileId;
         }
 
-        public void WriteChunk(byte[] Data, int ChunkId, int FileId)
+        public int WriteChunk(byte[] Data, int FileId)
         {
-            int ChunkStart = Metadata.GetChunkStart(ChunkId);
-            int ChunkLength = Metadata.GetChunkLength(ChunkId);
-            if (Data.Length > ChunkLength) throw new ChunkToSmallException($"Chunk {ChunkId} smaller then Data");
-            Metadata.WriteChunk(ChunkId, FileId);
+            byte[] compressedData = Data;
+            int chunkId = Metadata.GetChunk(compressedData.Length);
+            int ChunkStart = Metadata.GetChunkStart(chunkId);
+            int ChunkLength = Metadata.GetChunkLength(chunkId);
+            if (Data.Length > ChunkLength) throw new ChunkToSmallException($"Chunk {chunkId} smaller then Data");
+            Metadata.WriteChunk(chunkId, FileId);
             ArchivFile.Seek(ChunkStart, SeekOrigin.Begin);
             if (!(ArchivFile.Position == ChunkStart)) Logger.FatalError("ArchiveFile Position != ChunkStart");
-            if (Data.Length > ChunkLength) Logger.FatalError("DataLength > Chunk");
-            Logger.Debug($"Writing '{Data}' to Chunk: {ChunkId} Start: {ChunkStart} Length: {ChunkLength}");
-            ArchivFile.Write(Data, 0, ChunkLength);
+            if (compressedData.Length > ChunkLength) Logger.FatalError("DataLength > Chunk");
+            Logger.Debug($"Writing '{Data}' to Chunk: {chunkId} Start: {ChunkStart} Length: {ChunkLength}");
+            ArchivFile.Write(compressedData, 0, ChunkLength);
+            return chunkId;
         }
 
-        public void WriteChunk(string Data, int ChunkId, int FileId)
+        public int WriteChunk(string Data, int FileId)
         {
-            WriteChunk(Encoding.ASCII.GetBytes(Data), ChunkId, FileId);
+            return WriteChunk(Encoding.ASCII.GetBytes(Data), FileId);
         }
 
         public string ReadString(int ChunkId)

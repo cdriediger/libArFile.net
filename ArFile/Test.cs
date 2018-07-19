@@ -10,8 +10,8 @@ namespace ArFile
     {
         static void Main()
         {
-            AddFile();
-            //ReadFile();
+            //AddFile();
+            ReadFile();
             //AddData();
             //ReadArchive();
             //WriteTest();
@@ -23,11 +23,9 @@ namespace ArFile
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
             int f1 = archive.NewFile(@"C:\tmp\test.txt");
             string data = "1234567890";
-            int c1 = archive.Metadata.GetChunk(data.Length);
-            archive.WriteChunk(data, c1, f1);
+            archive.WriteChunk(data, f1);
             data = "ABCDEFGHIJKLMNOPGRSTUVWXYZ";
-            int c2 = archive.Metadata.GetChunk(data.Length);
-            archive.WriteChunk(data, c2, f1);
+            archive.WriteChunk(data, f1);
             archive.Dispose();
         }
 
@@ -47,8 +45,7 @@ namespace ArFile
                 }
                 byte[] data = new byte[dataLength];
                 file.Read(data, 0, dataLength);
-                int chunkId = archive.Metadata.GetChunk(dataLength);
-                archive.WriteChunk(data, chunkId, fileId);
+                archive.WriteChunk(data, fileId);
             }
             file.Close();
             archive.Dispose();
@@ -58,7 +55,7 @@ namespace ArFile
         {
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
             string filePath = @"C:\tmp\restore.pdf";
-            int fileId = 2;
+            int fileId = 1;
             FileStream file = new FileStream(filePath, FileMode.Create);
 
             foreach (int chunkId in archive.Metadata.Files[fileId].Chunks)
