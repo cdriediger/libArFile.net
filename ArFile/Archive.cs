@@ -110,10 +110,10 @@ namespace ArFile
             ArchivFile = System.IO.File.Open(PathToArchiveFile, FileMode.Open, FileAccess.ReadWrite);
             SuperBlock superBlock = ReadSuperBlock();
             Logger.Debug($"A: Found Superblock: Start: {superBlock.MetadataStart}, Length: {superBlock.MetadataLength}; Hash: {superBlock.MetadataHash}");
-            byte[] SuperBlockBuffer = new byte[superBlock.MetadataLength];
+            byte[] metadataBuffer = new byte[superBlock.MetadataLength];
             ArchivFile.Seek(superBlock.MetadataStart, SeekOrigin.Begin);
-            ArchivFile.Read(SuperBlockBuffer, 0, superBlock.MetadataLength);
-            string MetadataString = System.Text.Encoding.Default.GetString(SuperBlockBuffer);
+            ArchivFile.Read(metadataBuffer, 0, superBlock.MetadataLength);
+            string MetadataString = System.Text.Encoding.Default.GetString(metadataBuffer);
             Logger.Debug($"A: Found Metadata: '{MetadataString}' Length: {MetadataString.Length}");
             Metadata = JsonConvert.DeserializeObject<Metadata>(MetadataString);
         }
