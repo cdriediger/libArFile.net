@@ -11,29 +11,19 @@ namespace ArFile
         static void Main()
         {
             //AddFile();
-            ReadFile();
+            //ReadFile();
             //DeleteFile();
+            //ReclaimWhiteSpace();
             //AddData();
             //ReadArchive();
             //WriteTest();
             Console.ReadLine();
         }
-
-        static public void AddData()
-        {
-            Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
-            int f1 = archive.NewFile(@"C:\tmp\test.txt");
-            string data = "1234567890";
-            archive.WriteChunk(data, f1);
-            data = "ABCDEFGHIJKLMNOPGRSTUVWXYZ";
-            archive.WriteChunk(data, f1);
-            archive.Dispose();
-        }
-
+        
         static public void AddFile()
         {
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
-            string filePath = @"C:\tmp\test3.pdf";
+            string filePath = @"C:\tmp\test.pdf";
             int fileId = archive.NewFile(filePath);
             FileStream file = new FileStream(filePath, FileMode.Open);
 
@@ -73,6 +63,13 @@ namespace ArFile
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
             int fileId = 1;
             archive.DeleteFile(fileId);
+            archive.Dispose();
+        }
+
+        static public void ReclaimWhiteSpace()
+        {
+            Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
+            archive.ReclaimWhiteSpace();
             archive.Dispose();
         }
 

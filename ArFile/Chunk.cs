@@ -7,7 +7,7 @@ namespace ArFile
     public class Chunk
     {
         public int Id { get; }
-        public int Start { get; }
+        public int Start { get; set; }
         public int Length { get; }
         private int Written { get; set; }
         private int EndOfChunk { get; set; }

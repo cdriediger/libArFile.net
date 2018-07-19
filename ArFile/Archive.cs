@@ -65,6 +65,40 @@ namespace ArFile
             Metadata.Files.Remove(fileId);
         }
 
+        public void ReclaimWhiteSpace()
+        {
+            Logger.Debug("A: start reclaiming whitespace...");
+            string tmpPathToArchiveFile = PathToArchiveFile + ".tmp";
+            Logger.Debug($"A: Temporary archive path: {tmpPathToArchiveFile}");
+            string bakPathToArchiveFile = PathToArchiveFile + ".bak";
+            Logger.Debug($"A: Backup archive path: {bakPathToArchiveFile}");
+            FileStream tmpArchivFile = System.IO.File.Open(tmpPathToArchiveFile, FileMode.CreateNew, FileAccess.ReadWrite);
+            int tmpArchivPosition = 100;
+            tmpArchivFile.Seek(tmpArchivPosition, SeekOrigin.Begin);
+            foreach (KeyValuePair<int, Chunk> chunkKv in Metadata.WrittenChunks)
+            {
+                int chunkId = chunkKv.Key;
+                Chunk chunk = chunkKv.Value;
+                if (chunkId == 0) continue;
+                Logger.Debug($"A: copy chunk to tmp archive file: ChunkId: {chunk.Id}, Start: {chunk.Start} Length: {chunk.Length}");
+                ArchivFile.Seek(chunk.Start, SeekOrigin.Begin);
+                chunk.Start = tmpArchivPosition;
+                tmpArchivPosition += chunk.Length;
+                byte[] buffer = new byte[chunk.Length];
+                ArchivFile.Read(buffer, 0, chunk.Length);
+                tmpArchivFile.Write(buffer, 0, chunk.Length);
+            }
+            tmpArchivFile.Close();
+            ArchivFile.Close();
+            System.IO.File.Move(PathToArchiveFile, bakPathToArchiveFile);
+            System.IO.File.Move(tmpPathToArchiveFile, PathToArchiveFile);
+            ArchivFile = System.IO.File.Open(PathToArchiveFile, FileMode.Open, FileAccess.ReadWrite);
+            Metadata.EmptyChunks = new Dictionary<int, Chunk>();
+            Metadata.EmptyChunksStart = new Dictionary<int, Chunk>();
+            Metadata.EmptyChunksLength = new Dictionary<int, Chunk>();
+            Metadata.EndOfArchive = tmpArchivPosition;
+        }
+
         public int WriteChunk(byte[] Data, int FileId)
         {
             byte[] compressedData;
