@@ -55,6 +55,16 @@ namespace ArFile
             return FileId;
         }
 
+        public void DeleteFile(int fileId)
+        {
+            List<int> chunks = new List<int>(Metadata.GetChunksOfFile(fileId));
+            foreach (int chunkId in chunks)
+            {
+                Metadata.MarkChunkAsEmpty(chunkId, fileId);
+            }
+            Metadata.Files.Remove(fileId);
+        }
+
         public int WriteChunk(byte[] Data, int FileId)
         {
             byte[] compressedData;
