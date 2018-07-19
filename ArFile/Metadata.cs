@@ -33,7 +33,7 @@ namespace ArFile
             this.EmptyChunks = new Dictionary<int, Chunk>();
             this.EmptyChunksStart = new Dictionary<int, Chunk>();
             this.EmptyChunksLength = new Dictionary<int, Chunk>();
-            this.defaultChunkSize = 1000;
+            this.defaultChunkSize = 10000;
             this.defaultCompressionMethod = CompressionMethod.LZMA;
             this.defaultCompressionLevel = 5;
             //Register Superblock Chunk
