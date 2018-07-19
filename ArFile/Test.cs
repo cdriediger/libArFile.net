@@ -60,7 +60,8 @@ namespace ArFile
 
             foreach (int chunkId in archive.Metadata.Files[fileId].Chunks)
             {
-                file.Write(archive.ReadChunk(chunkId), 0, archive.Metadata.GetChunkLength(chunkId));
+                byte[] chunkData = archive.ReadChunk(chunkId);
+                file.Write(chunkData, 0, chunkData.Length);
             }
             file.Close();
             archive.Dispose();

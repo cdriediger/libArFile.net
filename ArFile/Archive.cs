@@ -57,11 +57,19 @@ namespace ArFile
 
         public int WriteChunk(byte[] Data, int FileId)
         {
-            byte[] compressedData = Data;
+            byte[] compressedData;
+            if (FileId == 0)
+            {
+                compressedData = Data;
+            }
+            else
+            {
+                compressedData = Compressor.Compress(Data, Metadata.defaultCompressionMethod, Metadata.defaultCompressionLevel);
+            }
             int chunkId = Metadata.GetChunk(compressedData.Length);
             int ChunkStart = Metadata.GetChunkStart(chunkId);
             int ChunkLength = Metadata.GetChunkLength(chunkId);
-            if (Data.Length > ChunkLength) throw new ChunkToSmallException($"Chunk {chunkId} smaller then Data");
+            if (compressedData.Length > ChunkLength) throw new ChunkToSmallException($"Chunk {chunkId} smaller then Data");
             Metadata.WriteChunk(chunkId, FileId);
             ArchivFile.Seek(ChunkStart, SeekOrigin.Begin);
             if (!(ArchivFile.Position == ChunkStart)) Logger.FatalError("ArchiveFile Position != ChunkStart");
@@ -85,10 +93,10 @@ namespace ArFile
         {
             int ChunkStart = Metadata.GetChunkStart(ChunkId);
             int ChunkLength = Metadata.GetChunkLength(ChunkId);
-            byte[] DataBuffer = new byte[ChunkLength];
+            byte[] CompressedDataBuffer = new byte[ChunkLength];
             ArchivFile.Seek(ChunkStart, SeekOrigin.Begin);
-            ArchivFile.Read(DataBuffer, 0, ChunkLength);
-            return DataBuffer;
+            ArchivFile.Read(CompressedDataBuffer, 0, ChunkLength);
+            return Compressor.Decompress(CompressedDataBuffer, Metadata.defaultCompressionMethod);
         }
 
         private void CreateNewArchive()
