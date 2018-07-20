@@ -10,9 +10,9 @@ namespace ArFile
     {
         static void Main()
         {
-            //AddFile();
-            //ReadFile();
-            //DeleteFile();
+            //AddFile(@"C:\tmp\test3.pdf");
+            ReadFile(1);
+            //DeleteFile(2);
             //ReclaimWhiteSpace();
             //AddData();
             //ReadArchive();
@@ -20,10 +20,9 @@ namespace ArFile
             Console.ReadLine();
         }
         
-        static public void AddFile()
+        static public void AddFile(string filePath)
         {
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
-            string filePath = @"C:\tmp\test.pdf";
             int fileId = archive.NewFile(filePath);
             FileStream file = new FileStream(filePath, FileMode.Open);
 
@@ -42,11 +41,10 @@ namespace ArFile
             archive.Dispose();
         }
 
-        static public void ReadFile()
+        static public void ReadFile(int fileId)
         {
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
             string filePath = @"C:\tmp\restore.pdf";
-            int fileId = 2;
             FileStream file = new FileStream(filePath, FileMode.Create);
 
             foreach (int chunkId in archive.Metadata.Files[fileId].Chunks)
@@ -58,10 +56,9 @@ namespace ArFile
             archive.Dispose();
         }
 
-        static public void DeleteFile()
+        static public void DeleteFile(int fileId)
         {
             Archive archive = new Archive(@"C:\Users\c.driediger\source\repos\ArFile\ArFile\testarchive.arfile");
-            int fileId = 1;
             archive.DeleteFile(fileId);
             archive.Dispose();
         }
