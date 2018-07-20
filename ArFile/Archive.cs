@@ -93,10 +93,7 @@ namespace ArFile
             System.IO.File.Move(PathToArchiveFile, bakPathToArchiveFile);
             System.IO.File.Move(tmpPathToArchiveFile, PathToArchiveFile);
             ArchivFile = System.IO.File.Open(PathToArchiveFile, FileMode.Open, FileAccess.ReadWrite);
-            Metadata.EmptyChunks = new Dictionary<int, Chunk>();
-            Metadata.EmptyChunksStart = new Dictionary<int, Chunk>();
-            Metadata.EmptyChunksLength = new Dictionary<int, Chunk>();
-            Metadata.EndOfArchive = tmpArchivPosition;
+            Metadata.DeleteEmptyChunks(tmpArchivPosition);
         }
 
         public int WriteChunk(byte[] Data, int FileId)

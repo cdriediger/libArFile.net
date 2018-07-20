@@ -80,7 +80,15 @@ namespace ArFile
                     EmptyChunksLength.Add(Chunk.Length, Chunk);
                 }
             }
+        }
 
+        public void DeleteEmptyChunks(int newEndOfArchive)
+        {
+            Logger.Debug($"M: Delete empty Chunks");
+            EmptyChunks = new Dictionary<int, Chunk>();
+            EmptyChunksStart = new Dictionary<int, Chunk>();
+            EmptyChunksLength = new Dictionary<int, Chunk>();
+            SetEndOfArchive(newEndOfArchive);
         }
 
         private Chunk GetChunkByIdInternal(int ChunkId)
